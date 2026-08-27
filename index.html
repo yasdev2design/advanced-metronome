@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description"
+    content="TAKT — a precision digital rhythm instrument. Offline-first metronome with rhythm builder, sound designer, practice mode and polyrhythms.">
+  <meta name="theme-color" content="#0c0d10">
+  <title>TAKT — Precision Rhythm Instrument</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TAKT">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <svg id="iconDefs" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path d="M7 4.5v15l13-7.5z" />
+      </symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24">
+        <path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z" />
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24">
+        <path d="M4 12h16" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-tap" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3.2" />
+        <path d="M12 2v4.5M12 17.5V22M2 12h4.5M17.5 12H22" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24">
+        <rect x="5.5" y="10.5" width="13" height="9.5" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-unlock" viewBox="0 0 24 24">
+        <rect x="5.5" y="10.5" width="13" height="9.5" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M8.5 10.5V8a3.5 3.5 0 0 1 6.8-1.2" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+        <path
+          d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"
+          fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24">
+        <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-collapse" viewBox="0 0 24 24">
+        <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.8 6.4 20l1.3-6.2L3 9.5l6.3-.7z" fill="none"
+          stroke="currentColor" stroke-width="1.6" />
+      </symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13.5h9l1-13.5M10 11v6M14 11v6" fill="none" stroke="currentColor"
+          stroke-width="2" />
+      </symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24">
+        <rect x="8.5" y="8.5" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M5.5 15.5h-2v-12h12v2" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24">
+        <path d="M4 20h4L20.5 7.5 17 4 4 17z" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-out" viewBox="0 0 24 24">
+        <path d="M12 15V3M7 8l5-5 5 5M4 14v7h16v-7" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-in" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 14v7h16v-7" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-sound" viewBox="0 0 24 24">
+        <path d="M4 9v6h4l6 5V4L8 9z" />
+        <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-mute" viewBox="0 0 24 24">
+        <path d="M4 9v6h4l6 5V4L8 9z" />
+        <path d="M16 9l6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-met" viewBox="0 0 24 24">
+        <path d="M9 3.5h6l3.5 17h-13z" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M12 15.5L17 6" stroke="currentColor" stroke-width="2" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <div id="banner" role="alert" hidden></div>
+
+  <div id="app" data-mode="standard">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8.6 3h6.8l3.4 18H5.2z" fill="none" stroke="currentColor" stroke-width="1.7" />
+          <path d="M12 14.6L17.4 5.5" stroke="currentColor" stroke-width="1.7" />
+        </svg>
+        <div class="brand-text"><span class="brand-name">TAKT</span><span class="brand-sub">precision rhythm
+            instrument</span></div>
+      </div>
+      <div class="topbar-actions">
+        <span id="miniDot" class="mini-dot" aria-hidden="true"></span>
+        <span id="statusLine" class="status-line" aria-live="polite">READY</span>
+        <button id="btnPresetTop" class="tbtn" type="button" title="Presets"><svg>
+            <use href="#i-star" />
+          </svg><span>Presets</span></button>
+        <button id="btnConsole" class="tbtn" type="button" title="Console — rhythm, sound, practice, system"><svg>
+            <use href="#i-gear" />
+          </svg><span>Console</span></button>
+        <button id="btnFullscreen" class="tbtn icon-only" type="button" aria-label="Fullscreen performance mode (F)"
+          title="Fullscreen performance mode (F)"><svg>
+            <use href="#i-expand" />
+          </svg></button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="stage" aria-label="Metronome instrument">
+        <div class="instrument" id="instrument">
+          <svg class="ring" id="ringSvg" viewBox="0 0 200 200" aria-hidden="true">
+            <circle class="ring-track" cx="100" cy="100" r="92" />
+            <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="92" />
+          </svg>
+          <div class="instrument-core">
+            <div class="readout">
+              <button id="bpmValue" class="bpm-value" type="button"
+                aria-label="Tempo in beats per minute. Click to type, scroll or drag vertically to adjust."
+                title="Click to type · scroll / drag to adjust">120</button>
+              <input id="bpmInput" class="bpm-input" type="number" min="20" max="300" step="0.1" value="120"
+                aria-label="Tempo, beats per minute" hidden>
+              <div class="readout-meta">
+                <span class="readout-unit">BPM</span>
+                <span class="tempo-mark" id="tempoMark">Allegro</span>
+              </div>
+            </div>
+            <div class="lock-wrap">
+              <button id="btnLock" class="sbtn icon-only" type="button" aria-label="Tempo lock" aria-pressed="false"
+                title="Tempo lock — blocks accidental tempo changes"><svg>
+                  <use href="#i-unlock" />
+                </svg></button>
+            </div>
+            <div class="transport" role="group" aria-label="Transport">
+              <div class="tempo-btns">
+                <button id="btnDec5" class="sbtn wide" type="button" aria-label="Tempo minus 5">−5</button>
+                <button id="btnDec" class="sbtn wide" type="button" aria-label="Tempo minus step">−1</button>
+                <button id="btnPlay" class="play" type="button" aria-label="Play or pause (Space)" data-playing="false">
+                  <svg class="ic-play">
+                    <use href="#i-play" />
+                  </svg><svg class="ic-pause">
+                    <use href="#i-pause" />
+                  </svg>
+                </button>
+                <button id="btnInc" class="sbtn wide" type="button" aria-label="Tempo plus step">+1</button>
+                <button id="btnInc5" class="sbtn wide" type="button" aria-label="Tempo plus 5">+5</button>
+              </div>
+              <button id="btnTap" class="tap" type="button" aria-label="Tap tempo (T)">TAP<span id="tapCount"
+                  class="tap-count">·</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="visualizer" id="visualizer" aria-label="Beat visualization">
+          <div class="beat-dots" id="beatDots" role="group"
+            aria-label="Beat indicator — activate a beat to change its level"></div>
+          <div class="measure-readout"><span id="barLabel">BAR 1</span><span class="sep">·</span><span
+              id="beatLabel">BEAT 1</span><span class="sep">·</span><span id="sigLabel">4/4</span><span
+              class="sep">·</span><span id="subLabelNow">♩</span></div>
+        </div>
+
+        <div class="strip-wrap" aria-label="Rhythm strip — click cells to edit">
+          <div class="strip" id="rhythmStrip"></div>
+          <div class="strip-legend">
+            <span><i class="lg lg-accent"></i>accent</span><span><i class="lg lg-normal"></i>normal</span><span><i
+                class="lg lg-soft"></i>soft</span><span><i class="lg lg-silent"></i>silent</span>
+            <button id="btnPatternHelp" class="linkbtn" type="button">Beat editor →</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="quick" aria-label="Quick controls">
+        <section class="qpanel">
+          <h2 class="qtitle">Time signature</h2>
+          <div class="sig-chips" id="sigChips" role="radiogroup" aria-label="Time signature"></div>
+          <div class="sig-custom">
+            <label>Custom <input id="sigNum" type="number" min="1" max="24" value="4"
+                aria-label="Beats per measure"></label>
+            <span class="sig-slash">/</span>
+            <label><input id="sigDen" type="number" min="1" max="16" value="4" aria-label="Note value"></label>
+            <button id="sigApply" class="sbtn" type="button">Apply</button>
+          </div>
+        </section>
+        <section class="qpanel">
+          <h2 class="qtitle">Subdivision</h2>
+          <div class="sub-chips" id="subChips" role="radiogroup" aria-label="Subdivision"></div>
+        </section>
+        <section class="qpanel">
+          <h2 class="qtitle">Sound</h2>
+          <div class="row">
+            <select id="soundSelect" class="select" aria-label="Beat sound"></select>
+            <button id="btnMute" class="sbtn icon-only" type="button" aria-label="Mute (M)" aria-pressed="false"
+              title="Mute — silent visual mode (M)"><svg id="muteIconUse">
+                <use href="#i-sound" />
+              </svg></button>
+          </div>
+          <div class="slider-row">
+            <label for="volumeSlider">Volume</label>
+            <input id="volumeSlider" class="slider" type="range" min="0" max="100" value="80"
+              aria-label="Master volume">
+            <output id="volumeOut" for="volumeSlider">80</output>
+          </div>
+          <div class="row gap-top">
+            <label class="check"><input id="subSoundToggle" type="checkbox"><span>Separate subdivision
+                sound</span></label>
+            <select id="subSoundSelect" class="select" aria-label="Subdivision sound" disabled></select>
+          </div>
+        </section>
+        <section class="qpanel">
+          <h2 class="qtitle">Mode</h2>
+          <div class="mode-chips" id="modeChips" role="radiogroup" aria-label="Rhythm mode">
+            <button class="chip" data-mode="standard" aria-pressed="true">Standard</button>
+            <button class="chip" data-mode="polyrhythm" aria-pressed="false">Polyrhythm</button>
+            <button class="chip" data-mode="polymeter" aria-pressed="false">Polymeter</button>
+          </div>
+          <p class="hint" id="modeHint">One pattern, accents and subdivisions.</p>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="statusbar">
+      <span id="diagMini">ENGINE · IDLE</span>
+      <span class="keys-hint"><kbd>Space</kbd> play · <kbd>T</kbd> tap · <kbd>M</kbd> mute · <kbd>F</kbd>
+        fullscreen</span>
+    </footer>
+  </div>
+
+  <!-- ============ CONSOLE DRAWER ============ -->
+  <div id="consoleScrim" hidden></div>
+  <aside id="console" class="console" aria-label="Console" aria-hidden="true">
+    <header class="console-head">
+      <span class="console-title">CONSOLE</span>
+      <button id="btnConsoleClose" class="tbtn icon-only" type="button" aria-label="Close console"><svg>
+          <use href="#i-close" />
+        </svg></button>
+    </header>
+    <nav class="console-nav" id="consoleNav" role="tablist" aria-label="Console sections">
+      <button role="tab" class="cnav" data-tab="rhythm" aria-selected="true">Rhythm</button>
+      <button role="tab" class="cnav" data-tab="sound" aria-selected="false">Sound</button>
+      <button role="tab" class="cnav" data-tab="practice" aria-selected="false">Practice</button>
+      <button role="tab" class="cnav" data-tab="poly" aria-selected="false">Poly</button>
+      <button role="tab" class="cnav" data-tab="auto" aria-selected="false">Automation</button>
+      <button role="tab" class="cnav" data-tab="presets" aria-selected="false">Presets</button>
+      <button role="tab" class="cnav" data-tab="look" aria-selected="false">Appearance</button>
+      <button role="tab" class="cnav" data-tab="system" aria-selected="false">System</button>
+    </nav>
+    <div class="console-body">
+
+      <section class="ctab" data-tab="rhythm" role="tabpanel" aria-label="Rhythm">
+        <div class="beat-editor">
+          <h3>Beat editor</h3>
+          <div class="beats-row" id="beatsRow"></div>
+          <div class="beat-detail" id="beatDetail">
+            <span class="dim" id="beatDetailTitle">Select a beat to edit it</span>
+            <div class="detail-grid" id="beatDetailGrid" hidden>
+              <span class="flabel">Level</span>
+              <div class="seg" id="segLevel" role="radiogroup" aria-label="Beat level">
+                <button data-level="accent" type="button">Accent</button>
+                <button data-level="normal" type="button">Normal</button>
+                <button data-level="soft" type="button">Soft</button>
+                <button data-level="silent" type="button">Silent</button>
+              </div>
+              <span class="flabel">Probability</span>
+              <div class="seg" id="segProb" role="radiogroup" aria-label="Beat probability">
+                <button data-prob="100" type="button">100%</button>
+                <button data-prob="75" type="button">75%</button>
+                <button data-prob="50" type="button">50%</button>
+              </div>
+              <span class="flabel">Sound</span>
+              <select id="beatSoundSelect" class="select" aria-label="Sound for this beat"></select>
+            </div>
+          </div>
+          <div class="row">
+            <label class="flabel-inline" for="beatsCount">Beats</label>
+            <input id="beatsCount" class="num" type="number" min="1" max="24" value="4">
+            <button id="btnResetPattern" class="sbtn" type="button">Reset pattern</button>
+          </div>
+        </div>
+        <div class="sub-editor">
+          <h3>Subdivision pattern</h3>
+          <p class="hint">Click a subdivision cell in the rhythm strip to cycle accent → normal → silent. First cell of
+            each group follows the main beat.</p>
+        </div>
+        <div class="range-editor">
+          <h3>Tempo range &amp; step</h3>
+          <div class="grid3">
+            <label class="flabel-inline" for="bpmMin">Min <input id="bpmMin" class="num" type="number" min="20"
+                max="300" value="20"></label>
+            <label class="flabel-inline" for="bpmMax">Max <input id="bpmMax" class="num" type="number" min="20"
+                max="300" value="300"></label>
+            <label class="flabel-inline" for="bpmStep">Step
+              <select id="bpmStep" class="select" aria-label="BPM step size">
+                <option value="0.1">0.1</option>
+                <option value="0.5">0.5</option>
+                <option value="1" selected>1</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="sound" role="tabpanel" aria-label="Sound designer" hidden>
+        <div class="row">
+          <label class="flabel-inline" for="designerTarget">Designing</label>
+          <div class="seg" id="designerTarget" role="radiogroup" aria-label="Sound designer target">
+            <button data-target="main" type="button" aria-pressed="true">Main</button>
+            <button data-target="sub" type="button" aria-pressed="false">Subdivision</button>
+          </div>
+        </div>
+        <div class="designer" id="designer">
+          <div class="grid2">
+            <label class="flabel-inline" for="dWave">Waveform
+              <select id="dWave" class="select">
+                <option value="sine">Sine</option>
+                <option value="square">Square</option>
+                <option value="triangle">Triangle</option>
+                <option value="sawtooth">Sawtooth</option>
+              </select>
+            </label>
+            <label class="flabel-inline" for="dSoundBase">Start from
+              <select id="dSoundBase" class="select" aria-label="Start from sound"></select>
+            </label>
+          </div>
+          <div class="slider-row"><label for="dFreq">Frequency</label><input id="dFreq" class="slider" type="range"
+              min="200" max="4000" step="10"><output id="dFreqOut"></output></div>
+          <div class="slider-row"><label for="dAttack">Attack</label><input id="dAttack" class="slider" type="range"
+              min="0" max="20" step="0.5"><output id="dAttackOut"></output></div>
+          <div class="slider-row"><label for="dDecay">Decay</label><input id="dDecay" class="slider" type="range"
+              min="5" max="400" step="5"><output id="dDecayOut"></output></div>
+          <div class="slider-row"><label for="dNoise">Noise</label><input id="dNoise" class="slider" type="range"
+              min="0" max="100" step="5"><output id="dNoiseOut"></output></div>
+          <div class="grid2">
+            <label class="flabel-inline" for="dFilter">Filter
+              <select id="dFilter" class="select">
+                <option value="none">None</option>
+                <option value="lowpass">Low-pass</option>
+                <option value="bandpass">Band-pass</option>
+                <option value="highpass">High-pass</option>
+              </select>
+            </label>
+            <label class="flabel-inline" for="dPan">Pan
+              <select id="dPan" class="select">
+                <option value="-0.6">Left</option>
+                <option value="0" selected>Center</option>
+                <option value="0.6">Right</option>
+              </select>
+            </label>
+          </div>
+          <div class="slider-row"><label for="dCutoff">Cutoff</label><input id="dCutoff" class="slider" type="range"
+              min="300" max="8000" step="50"><output id="dCutoffOut"></output></div>
+          <div class="slider-row"><label for="dQ">Resonance</label><input id="dQ" class="slider" type="range" min="0.5"
+              max="18" step="0.5"><output id="dQOut"></output></div>
+          <div class="slider-row"><label for="dAccent">Accent boost</label><input id="dAccent" class="slider"
+              type="range" min="0" max="100" step="5"><output id="dAccentOut"></output></div>
+          <div class="designer-actions">
+            <button id="btnPreviewNormal" class="sbtn" type="button">Preview normal</button>
+            <button id="btnPreviewAccent" class="sbtn" type="button">Preview accent</button>
+            <button id="btnPreviewSub" class="sbtn" type="button">Preview subdivision</button>
+          </div>
+          <div class="row">
+            <input id="dName" class="txt" type="text" placeholder="Name your sound…" maxlength="24"
+              aria-label="Custom sound name">
+            <button id="btnSaveSound" class="sbtn" type="button">Save sound</button>
+          </div>
+          <div id="customSoundsList" class="pill-list"></div>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="practice" role="tabpanel" aria-label="Practice mode" hidden>
+        <div class="practice">
+          <div class="grid3">
+            <label class="flabel-inline" for="pStart">Start BPM <input id="pStart" class="num" type="number" min="20"
+                max="300" value="80"></label>
+            <label class="flabel-inline" for="pTarget">Target <input id="pTarget" class="num" type="number" min="20"
+                max="300" value="120"></label>
+            <label class="flabel-inline" for="pStep">Increase <input id="pStep" class="num" type="number" min="1"
+                max="20" value="5"></label>
+          </div>
+          <div class="grid3">
+            <label class="flabel-inline" for="pEvery">Every (s) <input id="pEvery" class="num" type="number" min="5"
+                max="600" value="60"></label>
+            <label class="flabel-inline" for="pRest">Rest bars <input id="pRest" class="num" type="number" min="0"
+                max="32" value="0"></label>
+            <label class="flabel-inline" for="pReps">Repetitions <input id="pReps" class="num" type="number" min="1"
+                max="20" value="1"></label>
+          </div>
+          <div class="row">
+            <button id="btnPractice" class="cta" type="button" data-running="false">Start practice</button>
+            <span id="practiceStatus" class="practice-status" aria-live="polite">Idle</span>
+          </div>
+          <div class="progress">
+            <div id="practiceBar" class="progress-fill" style="width:0%"></div>
+          </div>
+          <p class="hint">Tempo increases automatically while the metronome runs. Rest bars are silent measures between
+            repetitions.</p>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="poly" role="tabpanel" aria-label="Polyrhythm and polymeter" hidden>
+        <div class="poly">
+          <h3 id="polyTitleMain">Polyrhythm</h3>
+          <div class="grid4" id="polyRatioChips" role="radiogroup" aria-label="Polyrhythm ratio">
+            <button class="chip" data-ratio="2:3">2 : 3</button>
+            <button class="chip" data-ratio="3:4">3 : 4</button>
+            <button class="chip" data-ratio="4:5">4 : 5</button>
+            <button class="chip" data-ratio="5:7">5 : 7</button>
+          </div>
+          <div class="row">
+            <label class="flabel-inline">Custom
+              <input id="polyA" class="num" type="number" min="2" max="12" value="3" aria-label="Primary pulses"> :
+              <input id="polyB" class="num" type="number" min="2" max="12" value="4" aria-label="Secondary pulses">
+            </label>
+          </div>
+          <h3>Secondary layer</h3>
+          <div class="grid2">
+            <label class="flabel-inline" for="polySound">Sound <select id="polySound" class="select"></select></label>
+            <label class="flabel-inline" for="polyVol">Volume <input id="polyVol" class="slider" type="range" min="0"
+                max="100" value="70"></label>
+          </div>
+          <h3 id="polyMeterTitle">Polymeter</h3>
+          <div class="grid2">
+            <label class="flabel-inline" for="meterBeats">Layer beats <input id="meterBeats" class="num" type="number"
+                min="2" max="13" value="3"></label>
+            <label class="flabel-inline" for="meterRatio">Beat length
+              <select id="meterRatio" class="select">
+                <option value="1">1×</option>
+                <option value="0.5">½×</option>
+                <option value="2">2×</option>
+              </select>
+            </label>
+          </div>
+          <div class="poly-visual" id="polyVisual" aria-hidden="true"></div>
+          <p class="hint" id="polyHint">Enabled from the Mode panel on the main screen.</p>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="auto" role="tabpanel" aria-label="Tempo automation" hidden>
+        <div class="auto">
+          <div class="row">
+            <label class="check"><input id="autoEnable" type="checkbox"><span>Enable tempo automation</span></label>
+            <div class="seg" id="autoMode" role="radiogroup" aria-label="Automation shape">
+              <button data-amode="ramp" type="button" aria-pressed="true">Ramp</button>
+              <button data-amode="step" type="button" aria-pressed="false">Steps</button>
+            </div>
+          </div>
+          <div id="autoPoints" class="auto-points"></div>
+          <div class="row">
+            <button id="btnAutoAdd" class="sbtn" type="button">+ Add point</button>
+            <span class="hint">Time is measured from play. Automation and practice mode are exclusive.</span>
+          </div>
+          <div class="timeline" id="timeline">
+            <div id="timelineLine" class="timeline-line"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="presets" role="tabpanel" aria-label="Presets" hidden>
+        <div class="presets">
+          <div class="row">
+            <input id="presetName" class="txt" type="text" placeholder="Preset name…" maxlength="28"
+              aria-label="Preset name">
+            <button id="btnPresetSave" class="sbtn" type="button">Save current</button>
+            <button id="btnPresetImport" class="sbtn" type="button"><svg>
+                <use href="#i-in" />
+              </svg> Import</button>
+            <button id="btnPresetExportAll" class="sbtn" type="button"><svg>
+                <use href="#i-out" />
+              </svg> Export all</button>
+            <input id="presetFile" type="file" accept=".json,application/json" hidden>
+          </div>
+          <h3>Built-in</h3>
+          <div id="builtinPresets" class="preset-list"></div>
+          <h3>Yours</h3>
+          <div id="userPresets" class="preset-list"></div>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="look" role="tabpanel" aria-label="Appearance" hidden>
+        <div class="look">
+          <div class="grid3">
+            <label class="flabel-inline">Theme
+              <select id="lookTheme" class="select">
+                <option value="auto">Auto</option>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </label>
+            <label class="flabel-inline">Density
+              <select id="lookDensity" class="select">
+                <option value="cozy">Cozy</option>
+                <option value="compact">Compact</option>
+              </select>
+            </label>
+            <label class="flabel-inline">Motion
+              <select id="lookMotion" class="select">
+                <option value="full">Full</option>
+                <option value="reduced">Reduced</option>
+                <option value="off">Off</option>
+              </select>
+            </label>
+          </div>
+          <label class="flabel-inline">Accent color
+            <div class="accent-chips" id="accentChips" role="radiogroup" aria-label="Accent color"></div>
+          </label>
+          <label class="flabel-inline">Visualizer
+            <select id="lookVisual" class="select">
+              <option value="grid">Digital grid</option>
+              <option value="ring">Beat ring</option>
+              <option value="pulse">Pulse</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </label>
+          <div class="slider-row"><label for="lookIntensity">Visual intensity</label><input id="lookIntensity"
+              class="slider" type="range" min="20" max="100" step="5"><output id="lookIntensityOut"></output></div>
+          <div class="grid2">
+            <label class="check"><input id="lookTabular" type="checkbox" checked><span>Decimal tempo
+                display</span></label>
+            <label class="check"><input id="lookHaptics" type="checkbox" checked><span>Haptic feedback
+                (tap)</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ctab" data-tab="system" role="tabpanel" aria-label="System" hidden>
+        <div class="system">
+          <h3>Diagnostics</h3>
+          <dl class="diag" id="diagList">
+            <dt>Audio context</dt>
+            <dd id="dgCtx">—</dd>
+            <dt>Sample rate</dt>
+            <dd id="dgRate">—</dd>
+            <dt>Output latency</dt>
+            <dd id="dgLat">—</dd>
+            <dt>Scheduler</dt>
+            <dd id="dgSched">idle</dd>
+            <dt>Schedule ahead</dt>
+            <dd id="dgAhead">—</dd>
+            <dt>Frame rate</dt>
+            <dd id="dgFps">—</dd>
+          </dl>
+          <h3>Keyboard shortcuts</h3>
+          <div id="shortcutList" class="shortcut-list"></div>
+          <p class="hint">Click a key to rebind it. Automation and practice mode are mutually exclusive.</p>
+          <h3>Onboarding</h3>
+          <div class="row"><button id="btnOnboardAgain" class="sbtn" type="button">Show quick start again</button></div>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- ============ FULLSCREEN PERFORMANCE MODE ============ -->
+  <div id="perf" class="perf" aria-hidden="true">
+    <div class="perf-inner">
+      <div class="perf-status"><span id="perfSig">4/4</span><span class="sep">·</span><span id="perfBar">BAR 1</span>
+      </div>
+      <div class="perf-bpm" id="perfBpm">120</div>
+      <div class="perf-dots" id="perfDots"></div>
+      <div class="perf-controls">
+        <button id="perfDec" class="sbtn wide" type="button" aria-label="Tempo minus step">−</button>
+        <button id="perfPlay" class="play" type="button" aria-label="Play or pause" data-playing="false">
+          <svg class="ic-play">
+            <use href="#i-play" />
+          </svg><svg class="ic-pause">
+            <use href="#i-pause" />
+          </svg>
+        </button>
+        <button id="perfInc" class="sbtn wide" type="button" aria-label="Tempo plus step">+</button>
+        <button id="perfTap" class="tap small" type="button">TAP</button>
+        <button id="perfClose" class="tbtn icon-only" type="button" aria-label="Exit fullscreen mode"><svg>
+            <use href="#i-collapse" />
+          </svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ONBOARDING ============ -->
+  <div id="onboarding" class="onboard" hidden>
+    <div class="onboard-card" role="dialog" aria-modal="true" aria-label="Quick start">
+      <div class="onboard-step" id="onboardStep">1 / 4</div>
+      <h2 id="onboardTitle">TAKT</h2>
+      <p id="onboardText">A precision rhythm instrument. Everything runs on your device — even offline.</p>
+      <div class="onboard-dots" id="onboardDots"></div>
+      <div class="onboard-actions">
+        <label class="check"><input id="onboardDontShow" type="checkbox"><span>Don’t show again</span></label>
+        <span class="spacer"></span>
+        <button id="onboardSkip" class="sbtn" type="button">Skip</button>
+        <button id="onboardNext" class="cta" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="storage.js"></script>
+  <script src="audio-engine.js"></script>
+  <script src="rhythm-engine.js"></script>
+  <script src="metronome.js"></script>
+  <script src="presets.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
